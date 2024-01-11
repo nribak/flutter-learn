@@ -1,16 +1,11 @@
-# fibonacci
+# Chronisense Learning Flutter Workshop
 
-A new Flutter project.
+After each session a new commit will be added to this repository
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
+## How to use
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+1. clone or download the repository
+2. open the downloaded directory in any editor (VSCode or Intellij IDEA are ok)
+3. run ```fluter pub get``` command from the terminal
+4. run the all 😀
