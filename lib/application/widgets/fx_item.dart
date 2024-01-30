@@ -1,4 +1,5 @@
 import 'package:currencies/domain/currency.dart';
+import 'package:currencies/utils/extensions.dart';
 import 'package:flutter/material.dart';
 
 class FXItem extends StatelessWidget {
@@ -9,9 +10,9 @@ class FXItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(currency.name),
-      subtitle: Text(currency.exchange.toStringAsFixed(3)),
-      leading: Text(currency.flag)
-    );
+        title: Text(currency.name),
+        subtitle: Text(currency.exchange.toStringAsFixed(3)),
+        leading: Text(currency.flag)
+    ).withColor(Colors.green);
   }
 }

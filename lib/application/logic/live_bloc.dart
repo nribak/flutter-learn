@@ -15,17 +15,18 @@ class LiveBloc extends Bloc<LiveBlocEvent, LiveBlocState> {
   LiveBloc(): super(LiveBlocState(currencies: [], isLoading: false));
 
   void _init() {
-    on<LiveBlocEvent>((event, emit) {
+    on<LiveBlocEvent>((event, emit) async {
       // get the data from api/storage/static
+      emit(LiveBlocState(currencies: state.currencies, isLoading: true));
+
+      await Future.delayed(Duration(seconds: 1));
+      // Future.delayed(Duration(seconds: 2)).then((res) {
+      //
+      // });
       final list = Currency.dummyCurrencies;
       emit(LiveBlocState(currencies: list, isLoading: false));
     });
   }
 
-  factory LiveBloc.newInstance() {
-    return LiveBloc().._init();
-    // final bloc = LiveBloc();
-    // bloc._init();
-    // return bloc;
-  }
+  factory LiveBloc.newInstance() => LiveBloc().._init();
 }
