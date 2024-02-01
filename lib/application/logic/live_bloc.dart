@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 
+import '../../domain/currencies_repository.dart';
 import '../../domain/currency.dart';
 
 class LiveBlocState {
@@ -12,21 +13,17 @@ class LiveBlocState {
 class LiveBlocEvent {}
 
 class LiveBloc extends Bloc<LiveBlocEvent, LiveBlocState> {
-  LiveBloc(): super(LiveBlocState(currencies: [], isLoading: false));
+  final CurrenciesRepository currenciesRepository;
+  LiveBloc({required this.currenciesRepository}): super(LiveBlocState(currencies: [], isLoading: false));
 
   void _init() {
     on<LiveBlocEvent>((event, emit) async {
-      // get the data from api/storage/static
       emit(LiveBlocState(currencies: state.currencies, isLoading: true));
-
-      await Future.delayed(Duration(seconds: 1));
-      // Future.delayed(Duration(seconds: 2)).then((res) {
-      //
-      // });
-      final list = Currency.dummyCurrencies;
+      final list = await currenciesRepository.getLatestCurrencies();
       emit(LiveBlocState(currencies: list, isLoading: false));
     });
   }
 
-  factory LiveBloc.newInstance() => LiveBloc().._init();
+  factory LiveBloc.newInstance({required CurrenciesRepository repository}) =>
+      LiveBloc(currenciesRepository: repository).._init();
 }

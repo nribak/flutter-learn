@@ -1,5 +1,4 @@
 import 'package:currencies/domain/currency.dart';
-import 'package:currencies/utils/extensions.dart';
 import 'package:flutter/material.dart';
 
 class FXItem extends StatelessWidget {
@@ -13,6 +12,6 @@ class FXItem extends StatelessWidget {
         title: Text(currency.name),
         subtitle: Text(currency.exchange.toStringAsFixed(3)),
         leading: Text(currency.flag)
-    ).withColor(Colors.green);
+    );
   }
 }
