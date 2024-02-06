@@ -1,9 +1,11 @@
 import 'dart:convert';
 
-import 'package:currencies/data/api_provider.dart';
-import 'package:currencies/data/remote_currency.dart';
+import 'package:currencies/data/providers/api_provider.dart';
+import 'package:currencies/data/models/remote_currency.dart';
 import 'package:http/http.dart';
+import 'package:injectable/injectable.dart';
 
+@Injectable(as: APIProvider)
 class ApiProviderImpl implements APIProvider {
   final client = Client();
   static const baseUrl = "sample-comments-service-5y6owysdhq-uc.a.run.app";
