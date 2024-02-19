@@ -6,7 +6,7 @@ import 'package:injectable/injectable.dart';
 
 import '../providers/storage_provider.dart';
 
-@Injectable(as: CurrenciesRepository)
+@LazySingleton(as: CurrenciesRepository)
 class CurrencyRepositoryImpl implements CurrenciesRepository {
   final APIProvider apiProvider;
   final StorageProvider storageProvider;
@@ -16,9 +16,7 @@ class CurrencyRepositoryImpl implements CurrenciesRepository {
   Future<List<Currency>> getLatestCurrencies() {
     return apiProvider.fetch().then((res) {
       final (currencies, timestamp) = res;
-      // final currencies = res.$1;
-      // final timestamp = res.$2;
-      return currencies.map((remoteCurrency) =>
+      final items = currencies.map((remoteCurrency) =>
           Currency(
               key: remoteCurrency.key,
               name: remoteCurrency.name,
@@ -26,6 +24,8 @@ class CurrencyRepositoryImpl implements CurrenciesRepository {
               flag: remoteCurrency.flag,
               timestamp: timestamp
           )).toList();
+      cache(items);
+      return items;
     });
   }
 
@@ -38,4 +38,17 @@ class CurrencyRepositoryImpl implements CurrenciesRepository {
     }
   }
 
+  @override
+  Future<List<Currency>> getCurrenciesBy(String key) async {
+    final db = await storageProvider.database;
+    final list = await db.currencyDao.findCurrencies(key);
+    return list.map((el) =>
+        Currency(
+            key: el.currencyKey,
+            name: el.name,
+            exchange: el.exchange,
+            flag: el.flag,
+            timestamp: el.timestamp
+        )).toList();
+  }
 }

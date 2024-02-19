@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'storage_provider.dart';
+part of 'app_database.dart';
 
 // **************************************************************************
 // FloorGenerator
@@ -85,7 +85,7 @@ class _$DatabaseProvider extends DatabaseProvider {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `currencies` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `key` TEXT NOT NULL, `name` TEXT NOT NULL, `exchange` REAL NOT NULL, `flag` TEXT NOT NULL, `timestamp` INTEGER NOT NULL)');
+            'CREATE TABLE IF NOT EXISTS `currencies` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `currencyKey` TEXT NOT NULL, `name` TEXT NOT NULL, `exchange` REAL NOT NULL, `flag` TEXT NOT NULL, `timestamp` INTEGER NOT NULL)');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -103,12 +103,13 @@ class _$CurrencyDAO extends CurrencyDAO {
   _$CurrencyDAO(
     this.database,
     this.changeListener,
-  ) : _storageCurrencyInsertionAdapter = InsertionAdapter(
+  )   : _queryAdapter = QueryAdapter(database),
+        _storageCurrencyInsertionAdapter = InsertionAdapter(
             database,
             'currencies',
             (StorageCurrency item) => <String, Object?>{
                   'id': item.id,
-                  'key': item.key,
+                  'currencyKey': item.currencyKey,
                   'name': item.name,
                   'exchange': item.exchange,
                   'flag': item.flag,
@@ -119,7 +120,23 @@ class _$CurrencyDAO extends CurrencyDAO {
 
   final StreamController<String> changeListener;
 
+  final QueryAdapter _queryAdapter;
+
   final InsertionAdapter<StorageCurrency> _storageCurrencyInsertionAdapter;
+
+  @override
+  Future<List<StorageCurrency>> findCurrencies(String currencyKey) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM currencies WHERE currencyKey = ?1',
+        mapper: (Map<String, Object?> row) => StorageCurrency(
+            row['id'] as int?,
+            row['currencyKey'] as String,
+            row['name'] as String,
+            row['exchange'] as double,
+            row['flag'] as String,
+            row['timestamp'] as int),
+        arguments: [currencyKey]);
+  }
 
   @override
   Future<void> insertCurrency(StorageCurrency currency) async {

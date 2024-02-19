@@ -1,22 +1,17 @@
-import 'dart:async';
+import 'package:injectable/injectable.dart';
 
-import 'package:currencies/data/dao/currency_dao.dart';
-import 'package:currencies/data/models/storage_currency.dart';
-import 'package:floor/floor.dart';
-import 'package:sqflite/sqflite.dart' as sqflite;
+import '../database/app_database.dart';
 
-part 'storage_provider.g.dart'; // the generated code will be there
-
-
+@LazySingleton()
 class StorageProvider {
   final Future<DatabaseProvider> database;
 
   StorageProvider({required this.database});
-}
 
-@Database(version: 1, entities: [StorageCurrency])
-abstract class DatabaseProvider extends FloorDatabase {
-
-  CurrencyDAO get currencyDao;
+  @FactoryMethod()
+  static StorageProvider create() {
+    final db = $FloorDatabaseProvider.databaseBuilder('app_database.db').build();
+    return StorageProvider(database: db);
+  }
 
 }
