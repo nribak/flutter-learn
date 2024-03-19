@@ -7,4 +7,8 @@ abstract interface class CurrenciesRepository {
   void cache(List<Currency> currencies);
 
   Future<List<Currency>> getCurrenciesBy(String key);
+
+  Stream<List<Currency>> liveCurrencyStream();
+
+
 }

@@ -41,6 +41,7 @@ dependencies:
   get_it: ^7.6.7
   injectable: ^2.3.2
   floor: ^1.4.2
+  rxdart: ^0.27.7
 
 dev_dependencies:
   flutter_test:

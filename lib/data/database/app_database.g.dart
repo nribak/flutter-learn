@@ -103,7 +103,7 @@ class _$CurrencyDAO extends CurrencyDAO {
   _$CurrencyDAO(
     this.database,
     this.changeListener,
-  )   : _queryAdapter = QueryAdapter(database),
+  )   : _queryAdapter = QueryAdapter(database, changeListener),
         _storageCurrencyInsertionAdapter = InsertionAdapter(
             database,
             'currencies',
@@ -114,7 +114,8 @@ class _$CurrencyDAO extends CurrencyDAO {
                   'exchange': item.exchange,
                   'flag': item.flag,
                   'timestamp': item.timestamp
-                });
+                },
+            changeListener);
 
   final sqflite.DatabaseExecutor database;
 
@@ -136,6 +137,21 @@ class _$CurrencyDAO extends CurrencyDAO {
             row['flag'] as String,
             row['timestamp'] as int),
         arguments: [currencyKey]);
+  }
+
+  @override
+  Stream<List<StorageCurrency>> liveCurrenciesStream() {
+    return _queryAdapter.queryListStream(
+        'SELECT *       FROM currencies        WHERE timestamp >= (         SELECT MAX(timestamp)          FROM currencies c2          WHERE c2.currencyKey = currencies.currencyKey        )         GROUP BY currencyKey ORDER BY timestamp DESC',
+        mapper: (Map<String, Object?> row) => StorageCurrency(
+            row['id'] as int?,
+            row['currencyKey'] as String,
+            row['name'] as String,
+            row['exchange'] as double,
+            row['flag'] as String,
+            row['timestamp'] as int),
+        queryableName: 'currencies',
+        isView: false);
   }
 
   @override

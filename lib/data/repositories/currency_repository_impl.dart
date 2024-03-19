@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:currencies/data/models/storage_currency.dart';
 import 'package:currencies/data/providers/api_provider.dart';
 import 'package:currencies/domain/currencies_repository.dart';
@@ -12,6 +14,16 @@ class CurrencyRepositoryImpl implements CurrenciesRepository {
   final StorageProvider storageProvider;
   CurrencyRepositoryImpl({required this.apiProvider, required this.storageProvider});
 
+  List<Currency> convert(List<StorageCurrency> list) =>
+      list.map((storageCurrency) => Currency(
+          key: storageCurrency.currencyKey,
+          name: storageCurrency.name,
+          exchange: storageCurrency.exchange,
+          flag: storageCurrency.flag,
+          timestamp: storageCurrency.timestamp
+      )).toList();
+
+
   @override
   Future<List<Currency>> getLatestCurrencies() {
     return apiProvider.fetch().then((res) {
@@ -24,7 +36,7 @@ class CurrencyRepositoryImpl implements CurrenciesRepository {
               flag: remoteCurrency.flag,
               timestamp: timestamp
           )).toList();
-      cache(items);
+      // cache(items);
       return items;
     });
   }
@@ -51,4 +63,16 @@ class CurrencyRepositoryImpl implements CurrenciesRepository {
             timestamp: el.timestamp
         )).toList();
   }
+
+  @override
+  Stream<List<Currency>> liveCurrencyStream() {
+    final controller = StreamController<List<Currency>>();
+    storageProvider.database.then((db) {
+      final stream = db.currencyDao.liveCurrenciesStream();
+      final outStream = stream.map(convert);
+      controller.sink.addStream(outStream);
+    });
+    return controller.stream;
+  }
+
 }

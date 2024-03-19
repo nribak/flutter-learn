@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LiveFXScreen extends StatelessWidget {
-  LiveFXScreen({super.key});
-
+  const LiveFXScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -30,3 +29,5 @@ class LiveFXScreen extends StatelessWidget {
     );
   }
 }
+
+
